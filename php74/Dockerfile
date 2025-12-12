@@ -1,8 +1,9 @@
-ARG ALPINE_VERSION=3.21
+ARG ALPINE_VERSION=3.15
 FROM alpine:${ALPINE_VERSION}
 LABEL Maintainer="nooblk-98"
 LABEL Description="Lightweight container with Nginx & PHP based on Alpine Linux."
-LABEL Version="1.0"
+LABEL Version="2.1"
+
 # Setup document root
 WORKDIR /var/www/html
 
@@ -10,39 +11,29 @@ WORKDIR /var/www/html
 RUN apk add --no-cache \
   curl \
   nginx \
-  php84 \
+  php7 \
+  php7-ctype \
+  php7-curl \
+  php7-dom \
+  php7-fileinfo \
+  php7-fpm \
+  php7-gd \
+  php7-intl \
+  php7-mbstring \
+  php7-mysqli \
+  php7-opcache \
+  php7-openssl \
+  php7-phar \
+  php7-session \
+  php7-tokenizer \
+  php7-xml \
+  php7-xmlreader \
+  php7-xmlwriter \
   supervisor
 
-# PHP extension installer
-ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-# Install required PHP extensions
-RUN install-php-extensions gd \
-    xdebug \
-    pcntl \
-    redis \
-    mysqli \
-    pdo \
-    pdo_mysql \
-    mbstring \
-    curl \
-    xml \
-    zip \
-    json \
-    fileinfo \
-    dom \
-    opcache \
-    phar \
-    iconv \
-    tokenizer \
-    simplexml \
-    intl \
-    exif \
-    imagick \
-    soap \
-    bcmath
 
-# RUN ln -s /usr/bin/php84 /usr/bin/php
+RUN ln -sf /usr/bin/php7 /usr/bin/php
 
 # # Configure nginx - http
 # COPY config/nginx.conf /etc/nginx/nginx.conf
@@ -50,7 +41,7 @@ RUN install-php-extensions gd \
 # COPY config/conf.d /etc/nginx/conf.d/
 
 # # Configure PHP-FPM
-# ENV PHP_INI_DIR /etc/php84
+# ENV PHP_INI_DIR /etc/php74
 # COPY config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
 # COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
 
