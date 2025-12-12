@@ -35,10 +35,10 @@ RUN apk add --no-cache \
 
 RUN ln -sf /usr/bin/php7 /usr/bin/php
 
-# # Configure nginx - http
-# COPY config/nginx.conf /etc/nginx/nginx.conf
-# # Configure nginx - default server
-# COPY config/conf.d /etc/nginx/conf.d/
+# Configure nginx - http
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+# Configure nginx - default server
+COPY nginx/conf.d /etc/nginx/conf.d/
 
 # # Configure PHP-FPM
 # ENV PHP_INI_DIR /etc/php74
