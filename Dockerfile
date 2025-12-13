@@ -44,10 +44,10 @@ COPY nginx/conf.d /etc/nginx/conf.d/
 # Configure supervisord
 COPY supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# # Configure PHP-FPM
-# ENV PHP_INI_DIR /etc/php74
-# COPY config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
-# COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
+# Configure PHP-FPM
+ENV PHP_INI_DIR=/etc/php7
+COPY php/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
+COPY php/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
 
 # # Configure supervisord
 # COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
