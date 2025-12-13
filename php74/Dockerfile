@@ -40,6 +40,9 @@ COPY nginx/nginx.conf /etc/nginx/nginx.conf
 # Configure nginx - default server
 COPY nginx/conf.d /etc/nginx/conf.d/
 
+# Configure supervisord
+COPY supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # # Configure PHP-FPM
 # ENV PHP_INI_DIR /etc/php74
 # COPY config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
