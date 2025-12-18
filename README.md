@@ -9,7 +9,7 @@ Production-ready PHP-FPM + Nginx container stack for local development, CI image
     <a href="https://hub.docker.com/r/lahiru98s/php-nginx-docker-template"><img src="https://img.shields.io/docker/pulls/lahiru98s/php-nginx-docker-template.svg" alt="Docker pulls" /></a>
     <a href="https://github.com/nooblk-98/php-nginx-docker-template/releases"><img src="https://img.shields.io/github/v/release/nooblk-98/php-nginx-docker-template?logo=github" alt="Latest release" /></a>
     <a href="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml"><img src="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml/badge.svg" alt="CI" /></a>
-    <a href="https://creativecommons.org/licenses/by-nc/2.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%202.0-blue.svg" alt="License: CC BY-NC 2.0" /></a>
+    <a href="http://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/license-AGPL-blue.svg" alt="License: AGPL License" /></a>
   </div>
 </div>
 
@@ -20,6 +20,35 @@ Hardened Nginx + PHP-FPM on Alpine, tuned for fast startup, low memory, and pred
 - Supervisor + tini for graceful shutdowns and managed services (nginx, php-fpm).
 - Prebaked Dockerfiles for PHP 7.4, 8.1, 8.2, 8.3, and 8.4 (edge) with opcache tweaks.
 - Health endpoints `/fpm-ping` and `/fpm-status` (localhost only) and a sample dashboard showing PHP limits/extensions.
+
+## Benifits !
+### 🔒 Security & Production Hardening
+- **Non-root runtime** - Container runs as unprivileged `app` user, reducing attack surface
+- **Locked-down defaults** - Nginx hides server details, security headers applied
+- **Minimal Alpine base** - Smaller attack surface, fewer vulnerabilities to patch
+
+### ⚡ Performance Optimization
+- **Tuned opcache** - Pre-configured for speed with sensible caching defaults
+- **Unix socket communication** - PHP-FPM and Nginx communicate via socket (faster than TCP)
+- **Gzip & caching** - Built-in compression and browser caching headers
+- **Fast startup** - Lightweight Alpine base means quick container spin-up
+
+### 🔧 Flexibility & Compatibility
+- **Multiple PHP versions** - Pre-built images for PHP 7.4, 8.1, 8.2, 8.3, 8.4
+- **Easy customization** - Override PHP settings via environment variables or `.env` file
+- **Version-locked Alpine** - Each PHP version paired with compatible Alpine release
+
+### 💻 Developer Experience
+- **Works out-of-the-box** - Just run `docker compose up` and start coding
+- **Health endpoints** - Built-in `/fpm-ping` and `/fpm-status` for monitoring
+- **Sample dashboard** - Included PHP info page to verify configuration
+- **CI/CD ready** - GitHub Actions workflow included for automated builds
+
+### 🛠️ Operational Reliability
+- **Graceful shutdowns** - Tini init system handles signals properly
+- **Supervised processes** - Supervisor manages nginx + php-fpm, auto-restarts on failure
+- **Clear error handling** - Proper logging configuration and troubleshooting guide
+
 
 ## Quick start (compose)
 ```bash
