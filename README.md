@@ -305,9 +305,6 @@ docker exec php-nginx tail -f /var/log/php-fpm/error.log
 
 ## 📚 Documentation
 
-### Project Structure
-
-```
 ### Key Configuration Files
 
 - **[nginx.conf](nginx/nginx.conf)** - Nginx global settings
@@ -316,7 +313,6 @@ docker exec php-nginx tail -f /var/log/php-fpm/error.log
 - **[fpm-pool.conf](php/fpm-pool.conf)** - PHP-FPM pool configuration
 - **[supervisord.conf](supervisord/supervisord.conf)** - Process supervision
 
----
 
 ## 🤝 Contributing
 
