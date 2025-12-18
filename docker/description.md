@@ -1,6 +1,6 @@
 ## PHP + Nginx (Alpine)
 
-Production-ready PHP-FPM + Nginx stack on Alpine. Hardened, lightweight, and tuned for fast startups and low memory use.
+Hardened PHP-FPM + Nginx on Alpine. Fast startup, low memory, ready for prod.
 
 **Highlights**
 - Non-root runtime, secure defaults, gzip/cache and basic security headers
