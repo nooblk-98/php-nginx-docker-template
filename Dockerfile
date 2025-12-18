@@ -1,18 +1,38 @@
-ARG ALPINE_VERSION=3.15
-ARG PHP_VERSION=7
+ARG ALPINE_VERSION=3.20
+ARG PHP_VERSION=83
+ARG APP_USER=app
+ARG APP_GROUP=app
+
 FROM alpine:${ALPINE_VERSION}
+
+# Re-declare build args for use in the build stage
+ARG PHP_VERSION
+ARG APP_USER
+ARG APP_GROUP
 LABEL Maintainer="nooblk-98"
 LABEL Description="Lightweight container with Nginx & PHP based on Alpine Linux."
-LABEL Version="2.1"
+LABEL Version="3.0"
+
+ENV PHP_VERSION=${PHP_VERSION} \
+    PHP_INI_DIR=/etc/php${PHP_VERSION} \
+    PHP_FPM_BIN=php-fpm${PHP_VERSION} \
+    PHP_BIN=php${PHP_VERSION} \
+    APP_USER=${APP_USER} \
+    APP_GROUP=${APP_GROUP}
 
 # Setup document root
 WORKDIR /var/www/html
 
-# Install packages and remove default server definition
+# Install packages
 RUN apk add --no-cache \
+  ca-certificates \
   curl \
   nginx \
+  openssl \
+  tini \
+  supervisor \
   php${PHP_VERSION} \
+  php${PHP_VERSION}-common \
   php${PHP_VERSION}-ctype \
   php${PHP_VERSION}-curl \
   php${PHP_VERSION}-dom \
@@ -26,15 +46,21 @@ RUN apk add --no-cache \
   php${PHP_VERSION}-openssl \
   php${PHP_VERSION}-phar \
   php${PHP_VERSION}-session \
+  php${PHP_VERSION}-simplexml \
   php${PHP_VERSION}-tokenizer \
   php${PHP_VERSION}-xml \
   php${PHP_VERSION}-xmlreader \
   php${PHP_VERSION}-xmlwriter \
-  supervisor
+  php${PHP_VERSION}-zip \
+  php${PHP_VERSION}-pecl-apcu \
+  php${PHP_VERSION}-pecl-redis \
+  && ln -sf /usr/bin/php${PHP_VERSION} /usr/bin/php
 
-
-
-RUN ln -sf /usr/bin/php7 /usr/bin/php
+# Create non-root user and prepare runtime dirs
+RUN set -eux; \
+  if ! grep -q "^${APP_GROUP}:" /etc/group; then addgroup -S "${APP_GROUP}"; fi; \
+  if ! id -u "${APP_USER}" >/dev/null 2>&1; then adduser -S -G "${APP_GROUP}" "${APP_USER}"; fi; \
+  install -d -o "${APP_USER}" -g "${APP_GROUP}" /run/nginx /run/php /run/supervisor /var/lib/nginx /var/log/nginx /var/cache/nginx /var/www/html
 
 # Configure nginx - http
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
@@ -45,27 +71,25 @@ COPY nginx/conf.d /etc/nginx/conf.d/
 COPY supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Configure PHP-FPM
-ENV PHP_INI_DIR=/etc/php7
 COPY php/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
-COPY php/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
+COPY php/php.ini ${PHP_INI_DIR}/conf.d/99-custom.ini
 
-# # Configure supervisord
-# COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Make sure files/folders needed by the processes are accessable when they run under the app user
+RUN chown -R ${APP_USER}:${APP_GROUP} /var/www/html /run/nginx /run/php /run/supervisor /var/lib/nginx /var/log/nginx /var/cache/nginx
 
-# # Make sure files/folders needed by the processes are accessable when they run under the nobody user
-# RUN chown -R nobody:nobody /var/www/html /run /var/lib/nginx /var/log/nginx
+# Switch to use a non-root user from here on
+USER ${APP_USER}
 
-# # Switch to use a non-root user from here on
-# USER nobody
+# Add application
+COPY --chown=${APP_USER}:${APP_GROUP} src/ /var/www/html/
 
-# # Add application
-# COPY --chown=nobody src/ /var/www/html/
+# Expose the port nginx is reachable on
+EXPOSE 8080
 
-# # Expose the port nginx is reachable on
-# EXPOSE 8080
+# Minimal init to forward signals correctly
+ENTRYPOINT ["/sbin/tini","--"]
+# Let supervisord start nginx & php-fpm
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
-# # Let supervisord start nginx & php-fpm
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# # Configure a healthcheck to validate that everything is up&running
-# HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping || exit 1
+# Configure a healthcheck to validate that everything is up&running
+HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping || exit 1
