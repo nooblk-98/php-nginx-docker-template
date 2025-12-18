@@ -6,3 +6,5 @@ services:
     image: ghcr.io/nooblk-98/php-nginx:latest
     ports:
       - "8080:8080"
+    # volumes:
+    #   - $(pwd)/src:/var/www/html  #mount local src folder to container

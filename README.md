@@ -92,10 +92,12 @@ services:
 ```bash
 # Start the container
 docker compose up -d
-
+```
+```bash
 # View logs
 docker compose logs -f
-
+```
+```bash
 # Visit your application
 open http://localhost:8080
 ```
