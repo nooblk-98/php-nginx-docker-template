@@ -1,27 +1,44 @@
 <div align="center">
   <img src="./images/logo.svg" width="360" alt="php-nginx-docker logo" />
 
-# php-nginx-docker-template
+# PHP-Nginx Docker Template
 
-Production-ready PHP-FPM + Nginx container stack for local development, CI images, and lightweight deployments.
+**Production-ready PHP-FPM + Nginx container stack for modern web applications**
 
-  <div>
-    <a href="https://hub.docker.com/r/lahiru98s/php-nginx-docker-template"><img src="https://img.shields.io/docker/pulls/lahiru98s/php-nginx-docker-template.svg" alt="Docker pulls" /></a>
-    <a href="https://github.com/nooblk-98/php-nginx-docker-template/releases"><img src="https://img.shields.io/github/v/release/nooblk-98/php-nginx-docker-template?logo=github" alt="Latest release" /></a>
-    <a href="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml"><img src="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml/badge.svg" alt="CI" /></a>
-    <a href="http://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/license-AGPL-blue.svg" alt="License: AGPL License" /></a>
-  </div>
+[![Docker Pulls](https://img.shields.io/docker/pulls/lahiru98s/php-nginx-docker-template.svg)](https://hub.docker.com/r/lahiru98s/php-nginx-docker-template)
+[![GitHub Release](https://img.shields.io/github/v/release/nooblk-98/php-nginx-docker-template?logo=github)](https://github.com/nooblk-98/php-nginx-docker-template/releases)
+[![CI/CD](https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml)
+[![License: AGPL](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+
+[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Contributing](#-contributing)
+
 </div>
 
 ---
 
-Hardened Nginx + PHP-FPM on Alpine, tuned for fast startup, low memory, and predictable behavior. Out of the box you get:
-- Non-root runtime, locked-down defaults, gzip/cache tuning, and basic security headers.
-- Supervisor + tini for graceful shutdowns and managed services (nginx, php-fpm).
-- Prebaked Dockerfiles for PHP 7.4, 8.1, 8.2, 8.3, and 8.4 (edge) with opcache tweaks.
-- Health endpoints `/fpm-ping` and `/fpm-status` (localhost only) and a sample dashboard showing PHP limits/extensions.
+## 📖 Overview
 
-## Benifits !
+A battle-tested, production-grade Docker template combining **Nginx** and **PHP-FPM** on Alpine Linux. Engineered for security, performance, and developer productivity with zero-configuration deployment and enterprise-grade defaults.
+
+**Perfect for:**
+- 🚀 Production deployments
+- 💻 Local development environments
+- 🔄 CI/CD pipelines
+- 📦 Microservices architecture
+- 🌐 API backends and web applications
+
+### What's Included
+
+- **Alpine Linux** - Minimal footprint (~50MB base image)
+- **PHP-FPM** - Optimized with opcache, APCu, and performance tuning
+- **Nginx** - Hardened configuration with security headers
+- **Supervisor** - Process management with auto-restart
+- **Tini** - Proper init system for graceful shutdowns
+- **Health Checks** - Built-in endpoints for monitoring
+
+---
+
+## ✨ Features
 ### 🔒 Security & Production Hardening
 - **Non-root runtime** - Container runs as unprivileged `app` user, reducing attack surface
 - **Locked-down defaults** - Nginx hides server details, security headers applied
