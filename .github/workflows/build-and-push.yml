@@ -8,48 +8,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
   IMAGE_NAME: php-nginx
-  DOCKERHUB_NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  CACHE_SCOPE_PREFIX: php-nginx
 
 jobs:
-  smoke:
-    name: Smoke build (no push)
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: ./php74/Dockerfile
-            tag: "7.4"
-          - dockerfile: ./php81/Dockerfile
-            tag: "8.1"
-          - dockerfile: ./php82/Dockerfile
-            tag: "8.2"
-          - dockerfile: ./php83/Dockerfile
-            tag: "8.3"
-          - dockerfile: ./php84/Dockerfile
-            tag: "8.4"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
-      - name: Smoke build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ${{ matrix.dockerfile }}
-          platforms: linux/amd64,linux/arm64
-          push: false
-          load: false
-          cache-from: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }}
-          cache-to: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }},mode=max
-
-  publish:
-    name: Build & push
-    needs: smoke
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -73,86 +35,49 @@ jobs:
           - dockerfile: ./php84/Dockerfile
             tag: "8.4"
             latest: true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
 
-      - name: Login to GHCR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Docker Hub
-        if: ${{ env.DOCKERHUB_NAMESPACE != '' && env.DOCKERHUB_TOKEN != '' }}
+      - name: Log in to Docker Hub (optional)
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ env.DOCKERHUB_NAMESPACE }}
-          password: ${{ env.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Compute image name
-        run: |
-          OWNER_LC=$(echo "${OWNER}" | tr '[:upper:]' '[:lower:]')
-          echo "IMAGE_REF=${REGISTRY}/${OWNER_LC}/${IMAGE_NAME}" >> "$GITHUB_ENV"
-          if [ -n "${DOCKERHUB_NAMESPACE}" ]; then
-            DH_NS="${DOCKERHUB_NAMESPACE}"
-            echo "DH_IMAGE_REF=docker.io/${DH_NS}/${IMAGE_NAME}" >> "$GITHUB_ENV"
-          fi
-        shell: bash
-
-      - name: Docker metadata (GHCR)
-        id: meta-ghcr
+      - name: Docker meta (both registries)
+        id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_REF }}
+          images: |
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/{{ env.IMAGE_NAME }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME || github.repository_owner }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=${{ matrix.tag }}
             type=raw,value=latest,enable=${{ matrix.latest }}
 
-      - name: Build and push (GHCR)
-        id: build
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta-ghcr.outputs.tags }}
-          labels: ${{ steps.meta-ghcr.outputs.labels }}
-          cache-from: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }}
-          cache-to: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }},mode=max
-
-      - name: Docker metadata (Docker Hub)
-        if: ${{ env.DOCKERHUB_NAMESPACE != '' && env.DH_IMAGE_REF != '' }}
-        id: meta-dh
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.DH_IMAGE_REF }}
-          tags: |
-            type=raw,value=${{ matrix.tag }}
-            type=raw,value=latest,enable=${{ matrix.latest }}
-
-      - name: Retag digest to Docker Hub
-        if: ${{ env.DOCKERHUB_NAMESPACE != '' && env.DH_IMAGE_REF != '' }}
-        env:
-          DIGEST: ${{ steps.build.outputs.digest }}
-          TAGS: ${{ steps.meta-dh.outputs.tags }}
-          SOURCE_IMAGE: ${{ env.IMAGE_REF }}
-        run: |
-          set -euo pipefail
-          if [ -z "${DIGEST}" ]; then
-            echo "No digest produced from build step."
-            exit 1
-          fi
-          if [ -z "${SOURCE_IMAGE}" ]; then
-            echo "SOURCE_IMAGE is empty"
-            exit 1
-          fi
-          SOURCE_REF="${SOURCE_IMAGE}@${DIGEST}"
-          echo "${TAGS}" | tr ' ' '\n' | sed '/^$/d' | while read -r tag; do
-            echo "Publishing ${SOURCE_REF} as ${tag}"
-            docker buildx imagetools create -t "${tag}" "${SOURCE_REF}"
-          done
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
