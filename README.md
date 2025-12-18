@@ -1,3 +1,22 @@
+<div align="center">
+  <img src="./images/logo.svg" width="360" alt="php-nginx-docker logo" />
+
+# php-nginx-docker-template
+
+PHP + Nginx Docker setup for local development and production-ready deployments.
+
+  <div>
+    <a href="https://hub.docker.com/r/lahiru98s/php-nginx-docker-template "><img src="https://img.shields.io/docker/pulls/lahiru98s/php-nginx-docker-template .svg" alt="Docker UI pulls" /></a>
+    <a href="https://github.com/nooblk-98/lighthouse/releases"><img src="https://img.shields.io/github/v/release/nooblk-98/lighthouse?logo=github" alt="Latest release" /></a>
+    <a href="https://github.com/nooblk-98/lighthouse/actions/workflows/docker-build-push.yml"><img src="https://github.com/nooblk-98/lighthouse/actions/workflows/docker-build-push.yml/badge.svg" alt="CI" /></a>
+     <a href="https://creativecommons.org/licenses/by-nc/2.0/">
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC%202.0-blue.svg" alt="License: CC BY-NC 2.0" />
+  </div>
+</div>
+
+---
+
+
 # php-nginx-docker-template
 Hardened, lightweight PHP-FPM + Nginx container based on Alpine. Ships with sensible defaults, tuned opcache, non-root runtime, and health checks for production-style deployments.
 
