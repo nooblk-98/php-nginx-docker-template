@@ -1,5 +1,5 @@
-ARG ALPINE_VERSION=3.15
-ARG PHP_VERSION=7
+ARG ALPINE_VERSION=3.20
+ARG PHP_VERSION=83
 ARG APP_USER=app
 ARG APP_GROUP=app
 
@@ -10,7 +10,7 @@ ARG APP_USER
 ARG APP_GROUP
 
 LABEL Maintainer="nooblk-98"
-LABEL Description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux (PHP 7.x)."
+LABEL Description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux (PHP 8.3)."
 LABEL Version="3.0"
 
 ENV PHP_VERSION=${PHP_VERSION} \
