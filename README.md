@@ -7,6 +7,7 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/lahiru98s/php-nginx-docker-template.svg)](https://hub.docker.com/r/lahiru98s/php-nginx)
 [![CI/CD](https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml)
+[![PHP Version](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![License: AGPL](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
 [Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Contributing](#-contributing)
