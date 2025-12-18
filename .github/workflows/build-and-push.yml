@@ -15,7 +15,41 @@ env:
   CACHE_SCOPE_PREFIX: php-nginx
 
 jobs:
-  build-matrix:
+  smoke:
+    name: Smoke build (no push)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./php74/Dockerfile
+            tag: "7.4"
+          - dockerfile: ./php81/Dockerfile
+            tag: "8.1"
+          - dockerfile: ./php82/Dockerfile
+            tag: "8.2"
+          - dockerfile: ./php83/Dockerfile
+            tag: "8.3"
+          - dockerfile: ./php84/Dockerfile
+            tag: "8.4"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Smoke build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/amd64,linux/arm64
+          push: false
+          load: false
+          cache-from: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }}
+          cache-to: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }},mode=max
+
+  publish:
+    name: Build & push
+    needs: smoke
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,16 +73,10 @@ jobs:
           - dockerfile: ./php84/Dockerfile
             tag: "8.4"
             latest: true
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
 
       - name: Login to GHCR
         uses: docker/login-action@v3
