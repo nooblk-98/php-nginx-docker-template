@@ -20,13 +20,6 @@
 
 A battle-tested, production-grade Docker template combining **Nginx** and **PHP-FPM** on Alpine Linux. Engineered for security, performance, and developer productivity with zero-configuration deployment and enterprise-grade defaults.
 
-**Perfect for:**
-- 🚀 Production deployments
-- 💻 Local development environments
-- 🔄 CI/CD pipelines
-- 📦 Microservices architecture
-- 🌐 API backends and web applications
-
 ### What's Included
 
 - **Alpine Linux** - Minimal footprint (~50MB base image)
