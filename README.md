@@ -80,11 +80,6 @@ A battle-tested, production-grade Docker template combining **Nginx** and **PHP-
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Docker Engine 20.10+
-- Docker Compose 2.0+ (optional, for compose setup)
-
 ### Option 1: Docker Compose (Recommended)
 
 ```bash
