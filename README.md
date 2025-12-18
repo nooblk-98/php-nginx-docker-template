@@ -38,19 +38,17 @@ A battle-tested, production-grade Docker template combining **Nginx** and **PHP-
 
 ---
 
-## ✨ Features
----
 
-## ✨ Features
+## Features
 
-### 🔒 Security & Production Hardening
+### Security & Production Hardening
 
 - **Non-root runtime** - Container runs as unprivileged `app` user, reducing attack surface
 - **Locked-down defaults** - Nginx hides server details, security headers applied
 - **Minimal Alpine base** - Smaller attack surface, fewer vulnerabilities to patch
 - **Security headers** - X-Frame-Options, X-Content-Type-Options, X-XSS-Protection enabled
 
-### ⚡ Performance Optimization
+### Performance Optimization
 
 - **Tuned opcache** - Pre-configured for speed with sensible caching defaults
 - **Unix socket communication** - PHP-FPM and Nginx communicate via socket (faster than TCP)
@@ -58,14 +56,14 @@ A battle-tested, production-grade Docker template combining **Nginx** and **PHP-
 - **Browser caching** - Optimized cache headers for static assets
 - **Fast startup** - Lightweight Alpine base means quick container spin-up (<3s)
 
-### 🔧 Flexibility & Compatibility
+### Flexibility & Compatibility
 
 - **Multiple PHP versions** - Pre-built images for PHP 7.4, 8.1, 8.2, 8.3, 8.4
 - **Easy customization** - Override PHP settings via environment variables or `.env` file
 - **Version-locked Alpine** - Each PHP version paired with compatible Alpine release
 - **Common extensions included** - mysqli, pdo_mysql, gd, curl, zip, mbstring, opcache, and more
 
-### 💻 Developer Experience
+### Developer Experience
 
 - **Zero configuration** - Just run `docker compose up` and start coding
 - **Health endpoints** - Built-in `/fpm-ping` and `/fpm-status` for monitoring
@@ -73,7 +71,7 @@ A battle-tested, production-grade Docker template combining **Nginx** and **PHP-
 - **CI/CD ready** - GitHub Actions workflow included for automated builds
 - **Hot reload** - Mount your code and see changes instantly
 
-### 🛠️ Operational Reliability
+### Operational Reliability
 
 - **Graceful shutdowns** - Tini init system handles signals properly
 - **Supervised processes** - Supervisor manages nginx + php-fpm, auto-restarts on failure
@@ -179,27 +177,6 @@ docker build -t php-nginx:8.4 -f php84/Dockerfile .
 
 ## ⚙️ Configuration
 
-### Environment Variables
-
-Create a `.env` file in your project root:
-
-```bash
-# PHP Configuration
-EXPOSE_PHP=Off
-DISPLAY_ERRORS=Off
-LOG_ERRORS=On
-MEMORY_LIMIT=256M
-MAX_EXECUTION_TIME=60
-MAX_INPUT_TIME=60
-POST_MAX_SIZE=32M
-UPLOAD_MAX_FILESIZE=32M
-DEFAULT_CHARSET="UTF-8"
-
-# Container Configuration
-PHP_VERSION=83
-APP_ENV=production
-```
-
 ### Custom PHP Settings
 
 The docker-compose.yml mounts `configs.php_overrides` into `/etc/php${PHP_VERSION}/conf.d/99-overrides.ini`.
@@ -258,29 +235,6 @@ docker exec php-nginx tail -f /var/log/php-fpm/error.log
 
 ---
 
-## 🐳 Registry & CI/CD
-
-### Docker Hub
-
-```bash
-docker build -t youruser/php-nginx:8.3 .
-docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
-docker push youruser/php-nginx:8.3
-```
-
-### GitHub Container Registry
-
-Automatically pushed via GitHub Actions on release:
-
-- **Trigger:** Push tag `v*` (e.g., `v1.0.0`)
-- **Images:** `ghcr.io/<owner>/php-nginx:<tag>`
-- **Credentials:** Uses built-in `GITHUB_TOKEN`
-
-**Required secrets:**
-- `DOCKERHUB_USERNAME` - Docker Hub username (optional)
-- `DOCKERHUB_TOKEN` - Docker Hub access token (optional)
-
----
 
 ## 🔧 Common Troubleshooting
 
@@ -357,33 +311,6 @@ docker exec php-nginx tail -f /var/log/php-fpm/error.log
 ### Project Structure
 
 ```
-php-nginx-docker-template/
-├── docker-compose.yml       # Compose orchestration
-├── Dockerfile               # Main Dockerfile (PHP 8.3)
-├── php74/                   # PHP 7.4 specific
-│   └── Dockerfile
-├── php81/                   # PHP 8.1 specific
-│   └── Dockerfile
-├── php82/                   # PHP 8.2 specific
-│   └── Dockerfile
-├── php83/                   # PHP 8.3 specific
-│   └── Dockerfile
-├── php84/                   # PHP 8.4 specific
-│   └── Dockerfile
-├── nginx/                   # Nginx configuration
-│   ├── nginx.conf
-│   └── conf.d/
-│       └── default.conf
-├── php/                     # PHP configuration
-│   ├── php.ini
-│   ├── custom.ini
-│   └── fpm-pool.conf
-├── supervisord/             # Process management
-│   └── supervisord.conf
-└── src/                     # Your application code
-    └── index.php
-```
-
 ### Key Configuration Files
 
 - **[nginx.conf](nginx/nginx.conf)** - Nginx global settings
@@ -440,16 +367,6 @@ We welcome contributions! Please follow these steps:
 ## 📝 License
 
 This project is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0).
-
-**Key points:**
-- ✅ Commercial use allowed
-- ✅ Modification allowed
-- ✅ Distribution allowed
-- ✅ Private use allowed
-- ⚠️ Network use is distribution (must share source)
-- ⚠️ Same license required for derivatives
-- ⚠️ Source code must be disclosed
-
 See [LICENSE](LICENSE) for full details.
 
 ---
@@ -463,18 +380,9 @@ See [LICENSE](LICENSE) for full details.
 
 ---
 
-## 📞 Support
-
-- 📖 **Documentation:** [GitHub Wiki](https://github.com/nooblk-98/php-nginx-docker-template/wiki)
-- 🐛 **Bug Reports:** [GitHub Issues](https://github.com/nooblk-98/php-nginx-docker-template/issues)
-- 💬 **Discussions:** [GitHub Discussions](https://github.com/nooblk-98/php-nginx-docker-template/discussions)
-- ⭐ **Star this repo** if you find it useful!
-
----
-
 <div align="center">
 
-**Made with ❤️ by the community**
+**Made with ❤️ by NoobLK**
 
 [⬆ Back to top](#php-nginx-docker-template)
 
