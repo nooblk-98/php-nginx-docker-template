@@ -12,6 +12,7 @@ env:
   IMAGE_NAME: php-nginx
   DOCKERHUB_NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  CACHE_SCOPE_PREFIX: php-nginx
 
 jobs:
   build-matrix:
@@ -68,27 +69,56 @@ jobs:
         run: |
           OWNER_LC=$(echo "${OWNER}" | tr '[:upper:]' '[:lower:]')
           echo "IMAGE_REF=${REGISTRY}/${OWNER_LC}/${IMAGE_NAME}" >> "$GITHUB_ENV"
-          DH_NS="${DOCKERHUB_NAMESPACE:-$OWNER_LC}"
-          echo "DH_IMAGE_REF=docker.io/${DH_NS}/${IMAGE_NAME}" >> "$GITHUB_ENV"
+          if [ -n "${DOCKERHUB_NAMESPACE}" ]; then
+            DH_NS="${DOCKERHUB_NAMESPACE}"
+            echo "DH_IMAGE_REF=docker.io/${DH_NS}/${IMAGE_NAME}" >> "$GITHUB_ENV"
+          fi
         shell: bash
 
-      - name: Docker metadata
-        id: meta
+      - name: Docker metadata (GHCR)
+        id: meta-ghcr
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ${{ env.IMAGE_REF }}
-            ${{ env.DH_IMAGE_REF }}
+          images: ${{ env.IMAGE_REF }}
           tags: |
             type=raw,value=${{ matrix.tag }}
             type=raw,value=latest,enable=${{ matrix.latest }}
 
-      - name: Build and push
+      - name: Build and push (GHCR)
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-ghcr.outputs.tags }}
+          labels: ${{ steps.meta-ghcr.outputs.labels }}
+          cache-from: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }}
+          cache-to: type=gha,scope=${{ env.CACHE_SCOPE_PREFIX }}-${{ matrix.tag }},mode=max
+
+      - name: Docker metadata (Docker Hub)
+        if: ${{ env.DOCKERHUB_NAMESPACE != '' && env.DH_IMAGE_REF != '' }}
+        id: meta-dh
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DH_IMAGE_REF }}
+          tags: |
+            type=raw,value=${{ matrix.tag }}
+            type=raw,value=latest,enable=${{ matrix.latest }}
+
+      - name: Retag digest to Docker Hub
+        if: ${{ env.DOCKERHUB_NAMESPACE != '' && env.DH_IMAGE_REF != '' }}
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+          TAGS: ${{ steps.meta-dh.outputs.tags }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DIGEST}" ]; then
+            echo "No digest produced from build step."
+            exit 1
+          fi
+          echo "${TAGS}" | tr ' ' '\n' | sed '/^$/d' | while read -r tag; do
+            echo "Publishing ${DIGEST} as ${tag}"
+            docker buildx imagetools create -t "${tag}" "${DIGEST}"
+          done
