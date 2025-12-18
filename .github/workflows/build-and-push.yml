@@ -114,4 +114,4 @@ jobs:
           pass: ${{ secrets.DOCKERHUB_TOKEN }}
           slug: ${{ env.DOCKERHUB }}/php-nginx
           readme: ./docker/description.md
-          description: php-nginx-docker-template - A lightweight Docker container for Nginx and PHP with Alpine Linux
+          description: php-nginx
