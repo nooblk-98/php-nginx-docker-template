@@ -100,6 +100,8 @@ docker compose logs -f
 open http://localhost:8080
 ```
 
+![localhost](images/web.png)
+
 ### Option 2: Docker Run
 
 ```bash
