@@ -8,18 +8,18 @@ Production-ready PHP-FPM + Nginx container stack for local development, CI image
   <div>
     <a href="https://hub.docker.com/r/lahiru98s/php-nginx-docker-template"><img src="https://img.shields.io/docker/pulls/lahiru98s/php-nginx-docker-template.svg" alt="Docker pulls" /></a>
     <a href="https://github.com/nooblk-98/php-nginx-docker-template/releases"><img src="https://img.shields.io/github/v/release/nooblk-98/php-nginx-docker-template?logo=github" alt="Latest release" /></a>
-    <a href="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/docker-build-push.yml"><img src="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/docker-build-push.yml/badge.svg" alt="CI" /></a>
+    <a href="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml"><img src="https://github.com/nooblk-98/php-nginx-docker-template/actions/workflows/build-and-push.yml/badge.svg" alt="CI" /></a>
     <a href="https://creativecommons.org/licenses/by-nc/2.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%202.0-blue.svg" alt="License: CC BY-NC 2.0" /></a>
   </div>
 </div>
 
 ---
 
-This template bundles hardened Nginx + PHP-FPM on Alpine, tuned for fast startup, low memory, and predictable behavior. Out of the box you get:
-- Non-root runtime, locked-down defaults, gzip and cache tuning, and basic security headers.
-- Supervisor + tini for graceful shutdowns and managed services (nginx, php-fpm, cron if enabled).
+Hardened Nginx + PHP-FPM on Alpine, tuned for fast startup, low memory, and predictable behavior. Out of the box you get:
+- Non-root runtime, locked-down defaults, gzip/cache tuning, and basic security headers.
+- Supervisor + tini for graceful shutdowns and managed services (nginx, php-fpm).
 - Prebaked Dockerfiles for PHP 7.4, 8.1, 8.2, 8.3, and 8.4 (edge) with opcache tweaks.
-- Health endpoints `/fpm-ping` and `/fpm-status` (localhost only) and a ready-to-serve sample app.
+- Health endpoints `/fpm-ping` and `/fpm-status` (localhost only) and a sample dashboard showing PHP limits/extensions.
 
 ## Quick start (compose)
 ```bash
@@ -48,6 +48,17 @@ docker build -t php-nginx:8.2 --build-arg PHP_VERSION=82 --build-arg ALPINE_VERS
 docker run --rm -p 8080:8080 php-nginx:8.3
 ```
 Open http://localhost:8080 after the container starts.
+
+## Images & registries
+- GHCR: `ghcr.io/<owner>/php-nginx:<tag>` (8.4 also `latest`). CI uses the built-in `GITHUB_TOKEN`.
+- Docker Hub: `docker.io/<dockerhub_username>/php-nginx:<tag>`. Provide `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets in GitHub Actions to push automatically.
+
+Manual push example (Docker Hub):
+```bash
+docker build -t youruser/php-nginx:8.3 .
+docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
+docker push youruser/php-nginx:8.3
+```
 
 ## Compose overrides
 `docker-compose.yml` mounts `configs.php_overrides` into `/etc/php${PHP_VERSION}/conf.d/99-overrides.ini`. Override via env (in a `.env` file or your shell):
