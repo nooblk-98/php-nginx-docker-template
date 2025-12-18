@@ -81,10 +81,15 @@ A battle-tested, production-grade Docker template combining **Nginx** and **PHP-
 ### Option 1: Docker Compose (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/nooblk-98/php-nginx-docker-template.git
-cd php-nginx-docker-template
+services:
+  app:
+    build: .
+    image: ghcr.io/nooblk-98/php-nginx:latest
+    ports:
+      - "8080:8080"
+```
 
+```bash
 # Start the container
 docker compose up -d
 
