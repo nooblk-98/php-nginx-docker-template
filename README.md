@@ -10,10 +10,11 @@
 [![Alpine Linux](https://img.shields.io/badge/Alpine-3.15%20|%203.18%20|%203.20%20|%20edge-0D597F?logo=alpine-linux&logoColor=white)](https://alpinelinux.org/)
 [![Nginx](https://img.shields.io/badge/Nginx-Latest-009639?logo=nginx&logoColor=white)](https://nginx.org/)
 [![Docker](https://img.shields.io/badge/Docker-20.10+-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-lahiru98s%2Fphp--nginx--docker--template-0db7ed?logo=docker&logoColor=white)](https://hub.docker.com/repository/docker/lahiru98s/php-nginx-docker-template)
 [![License: AGPL](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 [![Last Commit](https://img.shields.io/github/last-commit/nooblk-98/php-nginx-docker-template)](https://github.com/nooblk-98/php-nginx-docker-template/commits/main)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/nooblk-98/php-nginx-docker-template/blob/main/CONTRIBUTING.md)
+
+[Docker Hub Repository](https://hub.docker.com/repository/docker/lahiru98s/wordpress)
 
 </div>
 
