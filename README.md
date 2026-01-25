@@ -90,6 +90,11 @@ services:
 ```
 
 ```bash
+# permissions for files
+chown -R www-data:www-data /var/www/html
+```
+
+```bash
 # Start the container
 docker compose up -d
 ```
