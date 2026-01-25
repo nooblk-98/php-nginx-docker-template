@@ -2,6 +2,8 @@ name: Build and Push Images
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 1 1 * *"
 
 env:
   REGISTRY: ghcr.io
