@@ -190,9 +190,6 @@ The docker-compose.yml mounts `configs.php_overrides` into `/etc/php${PHP_VERSIO
 ```yaml
 services:
   app:
-    environment:
-      - MEMORY_LIMIT=512M
-      - MAX_EXECUTION_TIME=120
 ```
 
 ### Volume Mounts

@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   app:
-    build: .
     image: ghcr.io/nooblk-98/php-nginx:latest
     ports:
       - "8080:8080"

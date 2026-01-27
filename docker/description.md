@@ -19,9 +19,7 @@ Then open http://localhost:8080.
 ```
 EXPOSE_PHP=Off
 DISPLAY_ERRORS=Off
-MEMORY_LIMIT=256M
 POST_MAX_SIZE=32M
-UPLOAD_MAX_FILESIZE=32M
 ```
 
 Visit the [GitHub Repository](https://github.com/nooblk-98/php-nginx-docker-template) for the full guide.
