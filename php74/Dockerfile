@@ -38,6 +38,7 @@ RUN apk add --no-cache \
   php${PHP_VERSION}-fpm \
   php${PHP_VERSION}-gd \
   php${PHP_VERSION}-intl \
+  php${PHP_VERSION}-iconv \
   php${PHP_VERSION}-mbstring \
   php${PHP_VERSION}-mysqli \
   php${PHP_VERSION}-opcache \
@@ -66,6 +67,7 @@ COPY supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY php/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
 COPY php/php.ini ${PHP_INI_DIR}/conf.d/99-custom.ini
+RUN echo "allow_url_fopen = On" > ${PHP_INI_DIR}/conf.d/98-allow_url_fopen.ini
 
 RUN chown -R ${APP_USER}:${APP_GROUP} /var/www/html /run/nginx /run/php /run/supervisor /var/lib/nginx /var/log/nginx /var/cache/nginx
 
