@@ -2,8 +2,16 @@ version: "3.9"
 
 services:
   app:
+    build:
+      context: .
     image: ghcr.io/nooblk-98/php-nginx:latest
+    user: "www-data:www-data"
     ports:
       - "8080:8080"
-    # volumes:
-    #   - $(pwd)/src:/var/www/html  #mount local src folder to container
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html:rw

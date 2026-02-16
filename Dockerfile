@@ -9,9 +9,9 @@ FROM alpine:${ALPINE_VERSION}
 ARG PHP_VERSION
 ARG APP_USER
 ARG APP_GROUP
-LABEL Maintainer="nooblk-98"
-LABEL Description="Lightweight container with Nginx & PHP based on Alpine Linux."
-LABEL Version="3.0"
+LABEL org.opencontainers.image.authors="nooblk-98" \
+      org.opencontainers.image.description="Lightweight container with Nginx & PHP based on Alpine Linux." \
+      org.opencontainers.image.version="3.1"
 
 ENV PHP_VERSION=${PHP_VERSION} \
     PHP_INI_DIR=/etc/php${PHP_VERSION} \
@@ -76,10 +76,10 @@ COPY supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Configure PHP-FPM
 COPY php/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
 COPY php/php.ini ${PHP_INI_DIR}/conf.d/99-custom.ini
-RUN echo "allow_url_fopen = On" > ${PHP_INI_DIR}/conf.d/98-allow_url_fopen.ini
 
 # Make sure files/folders needed by the processes are accessable when they run under the app user
-RUN chown -R ${APP_USER}:${APP_GROUP} /var/www/html /run/nginx /run/php /run/supervisor /var/lib/nginx /var/log/nginx /var/cache/nginx
+RUN chown -R ${APP_USER}:${APP_GROUP} /var/www/html /run/nginx /run/php /run/supervisor /var/lib/nginx /var/log/nginx /var/cache/nginx \
+  && chmod -R u=rwX,g=rX,o= /var/www/html
 
 # Switch to use a non-root user from here on
 USER ${APP_USER}
@@ -89,6 +89,7 @@ COPY --chown=${APP_USER}:${APP_GROUP} src/ /var/www/html/
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
+STOPSIGNAL SIGTERM
 
 # Minimal init to forward signals correctly
 ENTRYPOINT ["/sbin/tini","--"]
