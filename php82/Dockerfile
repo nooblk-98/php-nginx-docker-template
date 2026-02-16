@@ -77,10 +77,10 @@ USER ${APP_USER}
 
 COPY --chown=${APP_USER}:${APP_GROUP} src/ /var/www/html/
 
-EXPOSE 8080
+EXPOSE 80
 STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["/sbin/tini","--"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
-HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping || exit 1
+HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:80/fpm-ping || exit 1

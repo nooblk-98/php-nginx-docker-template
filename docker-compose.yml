@@ -7,7 +7,7 @@ services:
     image: ghcr.io/nooblk-98/php-nginx:latest
     user: "www-data:www-data"
     ports:
-      - "8080:8080"
+      - "80:80"
     security_opt:
       - no-new-privileges:true
     cap_drop:

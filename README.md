@@ -88,7 +88,7 @@ services:
     build: .
     image: ghcr.io/nooblk-98/php-nginx:latest
     ports:
-      - "8080:8080"
+      - "80:80"
 ```
 
 ```bash
@@ -106,7 +106,7 @@ docker compose logs -f
 ```
 ```bash
 # Visit your application
-open http://localhost:8080
+open http://localhost
 ```
 
 ![localhost](images/web.png)
@@ -116,7 +116,7 @@ open http://localhost:8080
 ```bash
 docker run -d \
   --name php-nginx \
-  -p 8080:8080 \
+  -p 80:80 \
   -v $(pwd)/src:/var/www/html \
   lahiru98s/php-nginx-docker-template:8.3
 ```
@@ -207,8 +207,8 @@ volumes:
 
 ### Health Endpoints (localhost only)
 
-- **FPM Ping:** `http://localhost:8080/fpm-ping` - Returns `pong` if PHP-FPM is healthy
-- **FPM Status:** `http://localhost:8080/fpm-status` - Detailed PHP-FPM pool statistics
+- **FPM Ping:** `http://localhost/fpm-ping` - Returns `pong` if PHP-FPM is healthy
+- **FPM Status:** `http://localhost/fpm-status` - Detailed PHP-FPM pool statistics
 
 ### Docker Health Check
 
@@ -288,7 +288,7 @@ services:
 docker exec php-nginx ls -la /run/php/php-fpm.sock
 
 # Test ping endpoint
-docker exec php-nginx curl -f http://localhost:8080/fpm-ping
+docker exec php-nginx curl -f http://localhost/fpm-ping
 
 # Check nginx config
 docker exec php-nginx nginx -t
