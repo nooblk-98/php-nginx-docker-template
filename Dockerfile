@@ -50,6 +50,7 @@ RUN apk add --no-cache \
   php${PHP_VERSION}-phar \
   php${PHP_VERSION}-session \
   php${PHP_VERSION}-simplexml \
+  php${PHP_VERSION}-soap \
   php${PHP_VERSION}-tokenizer \
   php${PHP_VERSION}-xml \
   php${PHP_VERSION}-xmlreader \
